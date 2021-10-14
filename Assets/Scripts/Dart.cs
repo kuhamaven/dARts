@@ -77,7 +77,13 @@ public class Dart : MonoBehaviour
             _isDartRotating = false;
 
             _isDartOnBoard = true;
-            other.GetComponent<DartBoardSpace>().ResolveScore(this);
+            
+            //Ignorar esto si no llegamos al score)
+            DartBoardSpace space = other.GetComponent<DartBoardSpace>();
+            if (space)
+            {
+                space.ResolveScore(this);
+            }
         }
     }
 }

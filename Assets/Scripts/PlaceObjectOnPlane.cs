@@ -20,8 +20,6 @@ public class PlaceObjectOnPlane : MonoBehaviour
 
     public static event Action onPlacedObject;
 
-    public GameObject screen;
-
     private void Awake()
     {
         _mRayCastManager = GetComponent<ARRaycastManager>();
@@ -43,15 +41,22 @@ public class PlaceObjectOnPlane : MonoBehaviour
 
     private void PlaceObject()
     {
-        Instantiate(objectToPlace, _placementPose.position, _placementTransform.rotation);
-        onPlacedObject?.Invoke();
-        _isObjectPlaced = true;
-        placementIndicator.SetActive(false);
-        screen.SetActive(true);
+        //Si definimos un objeto a colocar, lo instanciamos e invocamos su metodo.
+        
+        if (objectToPlace)
+        {
+            Instantiate(objectToPlace, _placementPose.position, _placementTransform.rotation);
+            onPlacedObject?.Invoke(); //Llamamos a los que se suscribieron al metodo.
+            _isObjectPlaced = true;
+            placementIndicator.SetActive(false);
+        }
     }
 
     private void UpdatePlacementPosition()
     {
+        
+        //Aca revisamos los planos, y si estamos mirando a almenos uno, tomamos sus datos para usarlos en el placement.
+        
         var screenCenter = Camera.main.ViewportToScreenPoint(new Vector3(0.5f, 0.5f));
         if (_mRayCastManager.Raycast(screenCenter, _sHits, TrackableType.PlaneWithinPolygon))
         {
@@ -70,6 +75,9 @@ public class PlaceObjectOnPlane : MonoBehaviour
 
     private void UpdatePlacementIndicator()
     {
+        
+        //Si la ubicacion es valida, mostramos el indicador y actualizamos su posicipn. Si no, lo desactivamos.
+        
         if (_placementPoseIsValid)
         {
             placementIndicator.SetActive(true);
